@@ -3,7 +3,9 @@
 }
 
 html {
+    height: 100%;
     background-color: #212121;
+    background: linear-gradient(#414141 0%, #1a1a1a 5%, #1a1a1a 80%, #414141 100%);
 }
 
 table tr {
@@ -12,7 +14,8 @@ table tr {
 table tr td {
     padding: 0;
     margin: 0;
-    border: 2px solid #8A8A8A;
+    border: none;
+    /* border: 2px solid #8A8A8A; */
 }
 
 .center-container {
@@ -27,14 +30,49 @@ table.game-table {
 }
 
 input.l {
-    margin: 0;
-    min-width: 60px;
-    max-width: 60px;
-    width: 60px;
-    height: 60px;
+    margin: 10px 2px 0 2px;
+    min-width: 50px;
+    max-width: 50px;
+    width: 50px;
+    height: 50px;
     border-radius: 0;
     border: none;
+    border-bottom: 1px solid #E1E1E1;
     background-color: #1A1A1A;
     text-align: center;
     font-size: 2em;
+}
+
+/* input.l.Miss {
+    background-color: #711111;
+} */
+input.l.Letter {
+    background-color: #d3d300;
+}
+input.l.Hit {
+    background-color: #14af45;
+}
+
+#btnGuess:focus {
+    border-color: #3a3ada;
+    color: #e1e1e1;
+}
+
+#btnGuess:hover {
+    background-color: #3a3ada;
+    color: #e1e1e1;
+}
+
+#btnGuess:active {
+    background-color: #0a0ada;
+    color: #fafafa;
+}
+
+.hide {
+    display: none;
+}
+
+.win-message {
+    font-size: 3em;
+    color: #14af45;
 }
