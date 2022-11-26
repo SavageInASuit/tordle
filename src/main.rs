@@ -63,7 +63,7 @@ fn in_word(c: &char, word: Vec<char>) -> bool {
     word.contains(c)
 }
 
-fn mark_guess(guess: Guess, word: &String) -> MarkedGuess {
+fn mark_guess(guess: Guess, word: &str) -> MarkedGuess {
     let word_chars: Vec<char> = word.chars().collect();
     let mut hits: HashMap<char, u8> = HashMap::new();
     let mut counts: HashMap<char, u8> = HashMap::new();
@@ -82,7 +82,6 @@ fn mark_guess(guess: Guess, word: &String) -> MarkedGuess {
         counts.insert(
             *c, 
             u8::try_from(word_chars.iter().filter(|&o| o == c).count())
-                .ok()
                 .expect("trying to convert from usize to u8")
         );
     }

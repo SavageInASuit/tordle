@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod test {
     use crate::{Guess, mark_guess, GuessState, MarkedGuess, get_todays_word};
     use rocket::local::blocking::Client;
     use rocket::http::Status;
@@ -10,7 +10,7 @@ mod tests {
     }
 
     fn get_marked_guesses() -> [MarkedGuessTestCase; 5] {
-        return [
+        [
             MarkedGuessTestCase {
                 word: "guess".to_string(),
                 marked_guess: MarkedGuess {

@@ -8,9 +8,6 @@ html {
     background: linear-gradient(#414141 0%, #1a1a1a 5%, #1a1a1a 80%, #414141 100%);
 }
 
-table tr {
-}
-
 table tr td {
     padding: 0;
     margin: 0;
