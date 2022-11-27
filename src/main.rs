@@ -3,8 +3,7 @@ pub mod tests;
 use std::collections::HashMap;
 use chrono::{Utc, Datelike};
 
-use rocket::http::{Cookie, CookieJar};
-use rocket::{get, post, launch, routes};
+use rocket::{post, launch, routes};
 use rocket::serde::{Serialize, Deserialize, json::Json};
 use rocket::fs::FileServer;
 
@@ -29,34 +28,50 @@ struct MarkedGuess {
     marks: [GuessState; 5],
 }
 
+// Vector of words to guess
+const WORDS: [&str; 30] = [
+    "quote",
+    "drive",
+    "clock",
+    "strap",
+    "guess",
+    "sting",
+    "speak",
+    "thine",
+    "board",
+    "chuck",
+    "toast",
+    "cross",
+    "sugar",
+    "quilt",
+    "jelly",
+    "honey",
+    "uncle",
+    "mouse",
+    "lunch",
+    "atlas",
+    "navel",
+    "glove",
+    "piano",
+    "earth",
+    "water",
+    "fruit",
+    "dough",
+    "knife",
+    "virus",
+    "bevel",
+];
 
-fn get_today_formatted() -> String {
-    let now = Utc::now();
-    format!("{}-{}-{}", now.year(), now.month(), now.day())
+// Get index for date
+fn get_index_for_date(date: chrono::DateTime<Utc>) -> usize {
+    let day_of_year = date.day() as usize;
+    let year = date.year() as usize;
+    (day_of_year + year * 1000) % WORDS.len()
 }
 
+// Get today's date and use it to get a word from the WORDS vector
 fn get_todays_word() -> String {
-    let mut words: HashMap<String, String> = HashMap::new();
-    words.insert("2022-11-17".to_string(), "guess".to_string());
-    words.insert("2022-11-18".to_string(), "sting".to_string());
-    words.insert("2022-11-19".to_string(), "speak".to_string());
-    words.insert("2022-11-20".to_string(), "thine".to_string());
-    words.insert("2022-11-21".to_string(), "board".to_string());
-    words.insert("2022-11-22".to_string(), "hoard".to_string());
-    words.insert("2022-11-23".to_string(), "grove".to_string());
-    words.insert("2022-11-24".to_string(), "plonk".to_string());
-    words.insert("2022-11-25".to_string(), "wrong".to_string());
-    words.insert("2022-11-26".to_string(), "zebra".to_string());
-    words.insert("2022-11-27".to_string(), "quote".to_string());
-    words.insert("2022-11-28".to_string(), "drive".to_string());
-    words.insert("2022-11-29".to_string(), "clock".to_string());
-    words.insert("2022-11-30".to_string(), "strap".to_string());
-    let today = get_today_formatted();
-    
-    match words.get(&today) {
-        Some(word) => word.to_owned(),
-        None => "".to_owned(),
-    }
+    WORDS[get_index_for_date(Utc::now())].to_string()
 }
 
 fn in_word(c: &char, word: Vec<char>) -> bool {
@@ -113,29 +128,9 @@ fn make_guess(guess: Json<Guess>) -> Json<MarkedGuess> {
     Json(mark_guess(parsed_guess, &word_of_the_day))
 }
 
-fn get_user_data(cookie: &Cookie) -> UserData {
-    println!("Cookie is {:?}", cookie);
-    UserData{
-        name: "Tester".to_owned(), 
-        last: None,
-    }
-}
-
-#[get("/userData")]
-fn user_data(cookies: &CookieJar<'_>) -> Json<UserData> {
-    let user_data = match cookies.get("tordle-user") {
-        Some(cookie) => get_user_data(cookie),
-        None => UserData{
-            name: "New User".to_owned(), 
-            last: None,
-        },
-    };
-    Json(user_data)
-}
-
 #[launch]
 fn rocket() -> _ {
     rocket::build()
         .mount("/", FileServer::from("public"))
-        .mount("/", routes![user_data, make_guess])
+        .mount("/", routes![make_guess])
 }

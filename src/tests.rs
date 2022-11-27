@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod test {
-    use crate::{Guess, mark_guess, GuessState, MarkedGuess, get_todays_word};
+    use crate::{Guess, mark_guess, GuessState, MarkedGuess, get_todays_word, get_index_for_date};
     use rocket::local::blocking::Client;
     use rocket::http::Status;
+    use chrono::{Utc, Duration};
 
     struct MarkedGuessTestCase {
         word: String,
@@ -86,5 +87,13 @@ mod test {
         let word_of_the_day = get_todays_word();
 
         assert!(word_of_the_day.len() == 5);
+    }
+
+    #[test]
+    fn tomorrows_index_different() {
+        let todays_index = get_index_for_date(Utc::now());
+        let tomorrows_index = get_index_for_date(Utc::now() + Duration::days(1));
+
+        assert!(todays_index != tomorrows_index);
     }
 }
