@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      rust: latest
+    commands:
+      - echo "Installing required tools"
+      - rustup component add rustfmt
+      - rustup component add clippy
+
+  pre_build:
+    commands:
+      - echo "Running format check"
+      - cargo fmt --all -- --check
+      - echo "Running clippy"
+      - cargo clippy --all-targets --all-features -- -D warnings
+
+  build:
+    commands:
+      - echo "Building the project"
+      - cargo build --release
+
+  post_build:
+    commands:
+      - echo "Build completed"
+
+artifacts:
+  files:
+    - target/release/*
+
