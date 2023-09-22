@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod test {
-    use crate::{Guess, mark_guess, GuessState, MarkedGuess, get_todays_word, get_index_for_date};
-    use rocket::local::blocking::Client;
+    use crate::{get_index_for_date, get_todays_word, mark_guess, Guess, GuessState, MarkedGuess};
+    use chrono::{Duration, Utc};
     use rocket::http::Status;
-    use chrono::{Utc, Duration};
+    use rocket::local::blocking::Client;
 
     struct MarkedGuessTestCase {
         word: String,
@@ -15,37 +15,77 @@ mod test {
             MarkedGuessTestCase {
                 word: "guess".to_string(),
                 marked_guess: MarkedGuess {
-                    guess: Guess { letters: ['e', 'e', 'e', 'e', 'e'] },
-                    marks: [GuessState::Miss, GuessState::Miss, GuessState::Hit, GuessState::Miss, GuessState::Miss],
-                }
+                    guess: Guess {
+                        letters: ['e', 'e', 'e', 'e', 'e'],
+                    },
+                    marks: [
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Hit,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                    ],
+                },
             },
             MarkedGuessTestCase {
                 word: "guess".to_string(),
                 marked_guess: MarkedGuess {
-                    guess: Guess { letters: ['w', 'r', 'o', 'n', 'g'] },
-                    marks: [GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Letter],
-                }
+                    guess: Guess {
+                        letters: ['w', 'r', 'o', 'n', 'g'],
+                    },
+                    marks: [
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Letter,
+                    ],
+                },
             },
             MarkedGuessTestCase {
                 word: "guess".to_string(),
                 marked_guess: MarkedGuess {
-                    guess: Guess { letters: ['w', 'w', 'w', 'w', 'w'] },
-                    marks: [GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Miss],
-                }
+                    guess: Guess {
+                        letters: ['w', 'w', 'w', 'w', 'w'],
+                    },
+                    marks: [
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Miss,
+                    ],
+                },
             },
             MarkedGuessTestCase {
                 word: "guess".to_string(),
                 marked_guess: MarkedGuess {
-                    guess: Guess { letters: ['g', 'u', 'e', 's', 's'] },
-                    marks: [GuessState::Hit, GuessState::Hit, GuessState::Hit, GuessState::Hit, GuessState::Hit],
-                }
+                    guess: Guess {
+                        letters: ['g', 'u', 'e', 's', 's'],
+                    },
+                    marks: [
+                        GuessState::Hit,
+                        GuessState::Hit,
+                        GuessState::Hit,
+                        GuessState::Hit,
+                        GuessState::Hit,
+                    ],
+                },
             },
             MarkedGuessTestCase {
                 word: "toast".to_string(),
                 marked_guess: MarkedGuess {
-                    guess: Guess { letters: ['g', 'r', 'o', 't', 't'] },
-                    marks: [GuessState::Miss, GuessState::Miss, GuessState::Letter, GuessState::Letter, GuessState::Hit],
-                }
+                    guess: Guess {
+                        letters: ['g', 'r', 'o', 't', 't'],
+                    },
+                    marks: [
+                        GuessState::Miss,
+                        GuessState::Miss,
+                        GuessState::Letter,
+                        GuessState::Letter,
+                        GuessState::Hit,
+                    ],
+                },
             },
         ]
     }
@@ -57,10 +97,7 @@ mod test {
             let marked_guess = mark_guess(test_case.marked_guess.guess, &test_case.word);
             let marks = marked_guess.marks;
 
-            assert_eq!(
-                marks, 
-                test_case.marked_guess.marks
-            );
+            assert_eq!(marks, test_case.marked_guess.marks);
         }
     }
 
@@ -68,7 +105,10 @@ mod test {
     fn guess_good_request_okay_response() {
         let client = Client::tracked(crate::rocket()).expect("valid `rocket`");
 
-        let response = client.post("/makeGuess").body("{\"letters\": [\"a\",\"b\",\"c\",\"d\",\"e\"]}").dispatch();
+        let response = client
+            .post("/makeGuess")
+            .body("{\"letters\": [\"a\",\"b\",\"c\",\"d\",\"e\"]}")
+            .dispatch();
 
         assert_eq!(response.status(), Status::Ok);
     }
@@ -77,7 +117,10 @@ mod test {
     fn guess_bad_request_bad_request_response() {
         let client = Client::tracked(crate::rocket()).expect("valid `rocket`");
 
-        let response = client.post("/makeGuess").body("{\"letters\": [\"a\"]}").dispatch();
+        let response = client
+            .post("/makeGuess")
+            .body("{\"letters\": [\"a\"]}")
+            .dispatch();
 
         assert_eq!(response.status(), Status::UnprocessableEntity);
     }

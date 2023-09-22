@@ -1,11 +1,11 @@
 pub mod tests;
 
+use chrono::{Datelike, Utc};
 use std::collections::HashMap;
-use chrono::{Utc, Datelike};
 
-use rocket::{post, launch, routes};
-use rocket::serde::{Serialize, Deserialize, json::Json};
 use rocket::fs::FileServer;
+use rocket::serde::{json::Json, Deserialize, Serialize};
+use rocket::{launch, post, routes};
 
 #[derive(Serialize, PartialEq, Debug)]
 #[serde(crate = "rocket::serde")]
@@ -30,36 +30,9 @@ struct MarkedGuess {
 
 // Vector of words to guess
 const WORDS: [&str; 30] = [
-    "quote",
-    "drive",
-    "clock",
-    "strap",
-    "guess",
-    "sting",
-    "speak",
-    "thine",
-    "board",
-    "chuck",
-    "toast",
-    "cross",
-    "sugar",
-    "quilt",
-    "jelly",
-    "honey",
-    "uncle",
-    "mouse",
-    "lunch",
-    "atlas",
-    "navel",
-    "glove",
-    "piano",
-    "earth",
-    "water",
-    "fruit",
-    "dough",
-    "knife",
-    "virus",
-    "bevel",
+    "quote", "drive", "clock", "strap", "guess", "sting", "speak", "thine", "board", "chuck",
+    "toast", "cross", "sugar", "quilt", "jelly", "honey", "uncle", "mouse", "lunch", "atlas",
+    "navel", "glove", "piano", "earth", "water", "fruit", "dough", "knife", "virus", "bevel",
 ];
 
 // Get index for date
@@ -82,7 +55,13 @@ fn mark_guess(guess: Guess, word: &str) -> MarkedGuess {
     let word_chars: Vec<char> = word.chars().collect();
     let mut hits: HashMap<char, u8> = HashMap::new();
     let mut counts: HashMap<char, u8> = HashMap::new();
-    let mut marks: [GuessState; 5] = [GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Miss, GuessState::Miss];
+    let mut marks: [GuessState; 5] = [
+        GuessState::Miss,
+        GuessState::Miss,
+        GuessState::Miss,
+        GuessState::Miss,
+        GuessState::Miss,
+    ];
 
     // First pass for hits
     for (ind, c) in guess.letters.iter().enumerate() {
@@ -95,14 +74,17 @@ fn mark_guess(guess: Guess, word: &str) -> MarkedGuess {
             hits.insert(*c, hit_count + 1);
         }
         counts.insert(
-            *c, 
+            *c,
             u8::try_from(word_chars.iter().filter(|&o| o == c).count())
-                .expect("trying to convert from usize to u8")
+                .expect("trying to convert from usize to u8"),
         );
     }
     // Second pass for letters
     for (ind, c) in guess.letters.iter().enumerate() {
-        if c != &word_chars[ind] && in_word(c, word.chars().collect()) && (!hits.contains_key(c) || hits[c] != counts[c]) {
+        if c != &word_chars[ind]
+            && in_word(c, word.chars().collect())
+            && (!hits.contains_key(c) || hits[c] != counts[c])
+        {
             marks[ind] = GuessState::Letter;
             let hit_count = match hits.get(c) {
                 Some(count) => count.to_owned(),
@@ -111,7 +93,7 @@ fn mark_guess(guess: Guess, word: &str) -> MarkedGuess {
             hits.insert(*c, hit_count + 1);
         }
     }
-    MarkedGuess{guess, marks}
+    MarkedGuess { guess, marks }
 }
 
 #[derive(Serialize)]
