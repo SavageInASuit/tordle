@@ -10,7 +10,7 @@ files:
 
 hooks:
   ApplicationStop:
-    - location: /home/ec2-user/tordle/scripts/stop-server.sh
+    - location: scripts/stop-server.sh
   AfterInstall:
-    - location: /home/ec2-user/tordle/scripts/start-server.sh
+    - location: scripts/start-server.sh
 
