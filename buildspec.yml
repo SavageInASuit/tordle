@@ -32,3 +32,4 @@ artifacts:
   files:
     - target/release/*
     - public/**/*
+    - appspec.yml
