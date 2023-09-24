@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: target/release/
+    destination: /home/ec2-user/tordle/target/release
+  - source: public/
+    destination: /home/ec2-user/tordle/public
+
+hooks:
+  ApplicationStop:
+    - location: scripts/stop-server.sh
+  BeforeInstall:
+    - location: scripts/before-install.sh
+  AfterInstall:
+    - location: scripts/start-server.sh
+
