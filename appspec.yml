@@ -9,8 +9,8 @@ files:
 hooks:
   ApplicationStop:
     - location: scripts/stop-server.sh
-  BeforeInstall:
-    - location: scripts/before-install.sh
+      # BeforeInstall:
+      # - location: scripts/before-install.sh
   AfterInstall:
     - location: scripts/start-server.sh
 
