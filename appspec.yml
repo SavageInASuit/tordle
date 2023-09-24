@@ -5,12 +5,12 @@ files:
     destination: /home/ec2-user/tordle/target/release
   - source: public/
     destination: /home/ec2-user/tordle/public
+  - source: scripts/
+    destination: /home/ec2-user/tordle/scripts
 
 hooks:
   ApplicationStop:
     - location: scripts/stop-server.sh
-      # BeforeInstall:
-      # - location: scripts/before-install.sh
   AfterInstall:
     - location: scripts/start-server.sh
 
