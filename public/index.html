@@ -79,7 +79,7 @@
      - Go to previous input if pressing backspace in empty input (and not first input on row)
      - High - Show win/loss popup/message
     */
-    const apiURL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'http://tordle.tomsavage.me';
+    const apiURL = window.location.origin;
 
     const GAME_STATE_STORAGE_KEY = "game-state";
 
