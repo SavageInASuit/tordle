@@ -34,4 +34,3 @@ artifacts:
     - public/**/*
     - scripts/*
     - appspec.yml
-    - rocket.toml

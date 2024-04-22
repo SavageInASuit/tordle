@@ -7,8 +7,6 @@ files:
     destination: /home/ec2-user/tordle/public
   - source: scripts/
     destination: /home/ec2-user/tordle/scripts
-  - source: rocket.toml
-    destination: /home/ec2-user/tordle/rocket.toml
 fileExistsBehavior: OVERWRITE
 
 hooks:
