@@ -5,7 +5,9 @@ use std::collections::HashMap;
 
 use rocket::fs::FileServer;
 use rocket::serde::{json::Json, Deserialize, Serialize};
-use rocket::{launch, post, routes};
+use rocket::{Config, launch, post, routes};
+use rocket::config::LogLevel;
+use rocket::figment::Profile;
 
 #[derive(Serialize, PartialEq, Debug)]
 #[serde(crate = "rocket::serde")]
@@ -112,7 +114,26 @@ fn make_guess(guess: Json<Guess>) -> Json<MarkedGuess> {
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
+    // Check which build type we are in
+    let profile: Profile;
+    let log_level: LogLevel;
+    if cfg!(debug_assertions) {
+        println!("Debug build");
+        profile = Config::RELEASE_PROFILE;
+        log_level = LogLevel::Debug;
+    } else {
+        println!("Release build");
+        profile = Config::DEBUG_PROFILE;
+        log_level = LogLevel::Critical;
+    }
+
+    let config = Config {
+            profile,
+            log_level,
+            port: 8001,
+            ..Config::debug_default()
+    };
+    rocket::custom(config)
         .mount("/", FileServer::from("public"))
         .mount("/", routes![make_guess])
 }
